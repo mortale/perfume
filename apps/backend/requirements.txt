@@ -2,3 +2,6 @@ Django==4.2.0
 django-cors-headers==4.1.0
 requests==2.31.0
 django-proxy==1.2.1
+scikit-learn==1.6.1
+numpy==1.26.3
+djangorestframework==3.14.0

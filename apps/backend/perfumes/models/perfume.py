@@ -3,6 +3,7 @@ from .enum_config import EnumConfig
 
 class Perfume(models.Model):
     """Perfume"""
+    name = models.CharField('Name', max_length=200)
     brand = models.ForeignKey(
         EnumConfig, 
         on_delete=models.PROTECT,
@@ -10,7 +11,6 @@ class Perfume(models.Model):
         related_name='brand_perfumes',
         verbose_name='Brand'
     )
-    name = models.CharField('Name', max_length=200)
     gender = models.ForeignKey(
         EnumConfig,
         on_delete=models.PROTECT,
@@ -51,3 +51,19 @@ class Perfume(models.Model):
 
     def __str__(self):
         return f"{self.brand.name} - {self.name}"
+
+    @property
+    def brand_name(self):
+        return self.brand.name
+
+    @property
+    def scent_family_name(self):
+        return self.scent_family.name
+
+    @property
+    def gender_name(self):
+        return self.gender.name
+
+    @property
+    def longevity_name(self):
+        return self.longevity.name

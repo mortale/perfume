@@ -12,6 +12,7 @@ node_modules
 .env.test.local
 .env.production.local
 venv
+__pycache__
 # Testing
 coverage
 
@@ -36,3 +37,12 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Python
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python

@@ -15,7 +15,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'perfumes',  # 确保这行存在
+    'corsheaders',
+    'perfumes',
+    'rest_framework',  # 添加这一行
 ]
 
 MIDDLEWARE = [

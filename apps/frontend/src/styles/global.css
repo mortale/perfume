@@ -1,0 +1,12 @@
+body {
+    min-height: 100vh;
+    background-color: #fff;
+}
+
+.navbar {
+    border-bottom: 1px solid #eee;
+}
+
+.announcement-bar {
+    font-size: 0.875rem;
+}
