@@ -5,7 +5,7 @@
   "workspaces": [
     "apps/*"
   ],
-  "packageManager": "npm@9.6.7",
+  "packageManager": "pnpm@10.5.0",
   "scripts": {
     "build": "turbo run build",
     "start": "turbo run start --no-daemon",

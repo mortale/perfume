@@ -14,7 +14,8 @@ def main():
             "Couldn't import Django. Are you sure it's installed?"
         ) from exc
     execute_from_command_line(sys.argv)
+    print("\n  ➜  Local:   http://localhost:8000")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

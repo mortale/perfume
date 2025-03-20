@@ -1,84 +1,46 @@
-# Turborepo starter
+# Perfume
 
-This Turborepo starter is maintained by the Turborepo core team.
+这是一个使用 Turborepo 搭建的全栈项目，包含前端和后端应用。
 
-## Using this example
+## 快速开始
 
-Run the following command:
+### 环境要求
+- Node.js 16+
+- Python 3.8+
+- pnpm 8+
 
-```sh
-npx create-turbo@latest
-```
+### 依赖安装
+在项目根目录下：
+1. 前端依赖：执行 `pnpm install` 安装所有 JavaScript 依赖
+2. 后端依赖：
+   1. 创建并激活虚拟环境：
+      ```bash
+      python -m venv venv
+      source ./venv/Scripts/activate
+      ```
+   2. 安装依赖：`pip install -r apps/backend/requirements.txt`
 
-## What's inside?
+### 开发
+- 启动所有应用：使用 `pnpm start` 启动（需要先激活虚拟环境）
+- 前端应用：使用 `pnpm start --filter frontend` 启动
+- 后端应用：使用 `pnpm start --filter backend` 启动（需要先激活虚拟环境）
 
-This Turborepo includes the following packages/apps:
+## 项目结构
 
-### Apps and Packages
+### 应用
+- `apps/frontend`: 基于 Next.js 的前端应用
+- `apps/backend`: 基于 Django 的后端应用
+- `venv`: Python 虚拟环境目录
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### 工具集成
+本项目已集成以下工具：
+- [Django](https://www.djangoproject.com/) - Python Web 框架
+- [Django REST framework](https://www.django-rest-framework.org/) - RESTful API 框架
+- [Django CORS Headers](https://github.com/adamchainz/django-cors-headers) - 跨域资源共享
+- [Turborepo](https://turbo.build/) - 高性能构建系统
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+### 后端管理命令
+后端项目提供了以下管理命令（需要先激活虚拟环境）：
+- 创建数据库迁移：`pnpm makemigrations --filter backend`
+- 执行数据库迁移：`pnpm build --filter backend`
+- 创建超级用户：`pnpm createsuperuser --filter backend`
