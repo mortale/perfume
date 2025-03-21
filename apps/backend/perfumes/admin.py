@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import EnumConfig, Perfume
+from .models import EnumConfig, Perfume, Question, Answer
 
 @admin.register(EnumConfig)
 class EnumConfigAdmin(admin.ModelAdmin):
@@ -26,5 +26,50 @@ class PerfumeAdmin(admin.ModelAdmin):
         }),
         ('其他信息', {
             'fields': ('best_for', 'created_at', 'updated_at')
+        }),
+    )
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'type', 'order', 'is_active', 'created_at')
+    list_filter = ('type', 'is_active')
+    search_fields = ('title',)
+    list_editable = ('order', 'is_active')
+    ordering = ('order', 'id')
+    readonly_fields = ('id', 'created_at', 'updated_at')
+    fieldsets = (
+        ('基本信息', {
+            'fields': ('id', 'title', 'type')
+        }),
+        ('显示设置', {
+            'fields': ('order', 'is_active')
+        }),
+        ('时间信息', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'question', 'title', 'description', 'order', 'is_active')
+    list_filter = ('question', 'is_active')
+    search_fields = ('title', 'description')
+    list_editable = ('order', 'is_active')
+    filter_horizontal = ('related_perfumes',)
+    ordering = ('question', 'order', 'id')
+    readonly_fields = ('id', 'created_at', 'updated_at')
+    raw_id_fields = ['question']
+    fieldsets = (
+        ('基本信息', {
+            'fields': ('id', 'question', 'title', 'description', )
+        }),
+        ('显示设置', {
+            'fields': ('order', 'is_active')
+        }),
+        ('关联香水', {
+            'fields': ('related_perfumes',)
+        }),
+        ('时间信息', {
+            'fields': ('created_at', 'updated_at')
         }),
     )

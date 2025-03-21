@@ -1,49 +1,141 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '../../styles/global.css'
-import { createNavbar } from '../../components/navbar'
+import { quizModel } from './model'
+import { renderProgressBar, initProgressBarEvents,updateProgressBarActive } from './components/ProgressBar';
 
 document.documentElement.style.visibility = 'hidden';
 
-window.onload = function() {
+function handleButtonClick(type) {
+    switch(type) {
+        case 'prev':
+        case 'next':
+            rerender();
+            break;
+        case 'recommend':
+            if (quizModel.isAllQuestionsAnswered()) {
+                console.log('显示推荐页面');
+            }
+            break;
+    }
+}
+
+async function renderQuiz() {
+    const questions = await quizModel.init();
+    if (!questions || questions.length === 0) {
+        console.error('没有获取到问题数据');
+        return;
+    }
+    renderCurrentQuestion();
+    initProgressBarEvents(handleButtonClick);
+}
+
+// 修改 renderCurrentQuestion 中的 HTML 结构
+function renderCurrentQuestion() {
+    const question = quizModel.getCurrentQuestion();
     const app = document.getElementById('app');
+    
     app.innerHTML = `
-        ${createNavbar()}
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-md-6 text-center">
-                    <h2 class="mb-4">When were you born?</h2>
-                    <p class="text-muted mb-5">We know age is just a number, but it's part of the science</p>
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <select class="form-select form-select-lg" aria-label="Year">
-                                <option selected>Year</option>
-                                ${Array.from({length: 100}, (_, i) => 
-                                    `<option value="${2024-i}">${2024-i}</option>`
-                                ).join('')}
-                            </select>
-                        </div>
-                        <div class="col-sm-6">
-                            <select class="form-select form-select-lg" aria-label="Month">
-                                <option selected>Month</option>
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
+        <div class="container py-5 min-vh-100 d-flex flex-column">
+            <div class="row flex-grow-1">
+                <div class="col-md-6 mx-auto d-flex flex-column">
+                    <div class="text-center mb-5">
+                        <h2 id="questionTitle">${question.title}</h2>
+                    </div>
+                    <div class="row g-3 mt-4" id="answersContainer">
+                        ${question.answers.map(answer => `
+                            <div class="col-12">
+                                <button class="btn ${quizModel.getSelectedAnswer(question.id) === answer.id ? 'btn-primary' : 'btn-outline-primary'} btn-lg w-100" 
+                                    data-answer-id="${answer.id}"
+                                    data-question-id="${question.id}">
+                                    ${answer.title}
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="mt-auto pt-5">
+                        ${renderProgressBar()}
                     </div>
                 </div>
             </div>
         </div>
     `;
+
+    // 修改答案按钮点击事件
+    const answerButtons = app.querySelectorAll('[data-answer-id]');
+    answerButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const answerId = button.dataset.answerId;
+            const questionId = button.dataset.questionId;
+            
+            // 先设置选中状态
+            quizModel.setSelectedAnswer(questionId, answerId);
+            // 保存答案
+            quizModel.setAnswer(questionId, answerId);
+            
+            // 如果还有下一题，显示下一题
+            if (quizModel.hasNextQuestion()) {
+                quizModel.goToNextQuestion();
+                rerender()
+                updateProgressBarActive(quizModel.currentQuestionIndex)
+            } else {
+
+            }
+        });
+    });
+
+}
+
+// 修改 rerender 中的元素查找方式
+function rerender() {
+    const question = quizModel.getCurrentQuestion();
+    const titleElement = document.getElementById('questionTitle');
+    const answersContainer = document.getElementById('answersContainer');
+    
+    // 获取当前问题的选中答案
+    const selectedAnswerId = quizModel.getSelectedAnswer(question.id);
+    
+    // 更新标题
+    titleElement.textContent = question.title;
+    
+    // 更新选项，并根据选中状态设置按钮样式
+    answersContainer.innerHTML = question.answers.map(answer => `
+        <div class="col-12">
+            <button class="btn ${selectedAnswerId === "" + answer.id ? 'btn-primary' : 'btn-outline-primary'} btn-lg w-100" 
+                data-answer-id="${answer.id}"
+                data-question-id="${question.id}">
+                ${answer.title}
+            </button>
+        </div>
+    `).join('');
+    
+    // 重新绑定答案按钮事件
+    const answerButtons = answersContainer.querySelectorAll('[data-answer-id]');
+    answerButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const answerId = button.dataset.answerId;
+            const questionId = button.dataset.questionId;
+            
+            quizModel.setSelectedAnswer(questionId, answerId);
+            quizModel.setAnswer(questionId, answerId);
+            
+            if (quizModel.hasNextQuestion()) {
+                quizModel.goToNextQuestion();
+            }
+                rerender();
+                updateProgressBarActive(quizModel.currentQuestionIndex,);
+        });
+    });
+}
+
+// 添加全局跳转方法
+window.goToQuestion = (index) => {
+    quizModel.goToQuestion(index);
+    renderCurrentQuestion();
+};
+
+window.onload = function() {
+    renderQuiz();
     document.documentElement.style.visibility = 'visible';
 }
