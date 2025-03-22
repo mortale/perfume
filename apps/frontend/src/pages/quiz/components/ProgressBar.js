@@ -61,8 +61,6 @@ export function initProgressBarEvents(callback) {
     if (recommendButton) {
         recommendButton.addEventListener('click', () => {
             if (quizModel.isAllQuestionsAnswered()) {
-                const answers = quizModel.getAllAnswers();
-                console.log('问卷完成，答案：', answers);
                 callback?.('recommend');
             }
         });
@@ -143,5 +141,19 @@ export function updateProgressBarActive(newIndex) {
     }
     if (bars[newIndex + 1]) {
         bars[newIndex + 1].setAttribute('data-active-right', 'true');
+    }
+
+    // 在最后一题时检查是否所有问题都已回答
+    if (newIndex === totalQuestions - 1) {
+        const recommendButton = document.getElementById('recommendButton');
+        const isAllAnswered = quizModel.isAllQuestionsAnswered();
+        
+        if (recommendButton) {
+            if (!isAllAnswered) {
+                recommendButton.setAttribute('disabled','');
+            } else {
+                recommendButton.removeAttribute('disabled');
+            }
+        }
     }
 }

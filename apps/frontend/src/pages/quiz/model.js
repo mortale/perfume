@@ -97,6 +97,45 @@ class QuizModel {
         }
         return null;
     }
+
+    getMostRecommendedPerfumeId() {
+        // 创建计数器记录每个香水出现的次数
+        const perfumeCounter = new Map();
+        // 遍历所有已回答的问题
+        this.answers.forEach((answerId, questionId) => {
+            // 找到对应的问题和答案
+            const question = this.questions.find(q => q.id.toString() === questionId);
+            const answer = question?.answers.find(a => a.id.toString() === answerId);
+            // 统计相关香水出现次数
+            answer?.related_perfumes?.forEach(perfumeId => {
+                const count = perfumeCounter.get(perfumeId) || 0;
+                perfumeCounter.set(perfumeId, count + 1);
+            });
+        });
+
+        // 找出出现次数最多的香水ID
+        let maxCount = 0;
+        let recommendedPerfumeId = null;
+        perfumeCounter.forEach((count, perfumeId) => {
+            if (count > maxCount) {
+                maxCount = count;
+                recommendedPerfumeId = perfumeId;
+            }
+        });
+
+        return recommendedPerfumeId;
+    }
+
+    async getRecommendation() {
+        const recommendedPerfumeId = this.getMostRecommendedPerfumeId();
+        try {
+            const data = await http.get(`/api/perfumes/${recommendedPerfumeId}/recommendations`);
+            return data;
+        } catch (error) {
+            console.error('获取推荐香水失败：', error);
+            return null;
+        }
+    }
 }
 
 export const quizModel = new QuizModel();

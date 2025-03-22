@@ -69,25 +69,34 @@ class PerfumeRecommendationView(APIView):
             similar_indices = similarities[0].argsort()[::-1][1:6]
             
             # 构建推荐结果
-            recommendations = []
+            result = []
+            
+            # 添加目标香水作为第一项
+            result.append({
+                'id': target_perfume.id,
+                'name': target_perfume.name,
+                'brand': target_perfume.brand.name,
+                'gender': target_perfume.gender.name,
+                'scent_family': target_perfume.scent_family.name,
+                'longevity': target_perfume.longevity.name,
+                'price': str(target_perfume.price),
+            })
+            
+            # 添加推荐香水
             for idx in similar_indices:
                 perfume = all_perfumes[idx]
-                recommendations.append({
+                result.append({
                     'id': perfume.id,
                     'name': perfume.name,
                     'brand': perfume.brand.name,
-                    'similarity_score': float(similarities[0][idx]),
-                    'price': str(perfume.price)
+                    'gender': perfume.gender.name,
+                    'scent_family': perfume.scent_family.name,
+                    'longevity': perfume.longevity.name,
+                    'price': str(perfume.price),
+                    'similarity_score': float(similarities[0][idx])
                 })
             
-            return Response({
-                'target_perfume': {
-                    'id': target_perfume.id,
-                    'name': target_perfume.name,
-                    'brand': target_perfume.brand.name
-                },
-                'recommendations': recommendations
-            })
+            return Response(result)
             
         except Exception as e:
             logger.exception(f"推荐系统出错: {str(e)}")

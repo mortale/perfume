@@ -148,16 +148,20 @@ body {
 
 /* 隐藏按钮时使用 */
 .progress-bar-wrapper:has(.progress-container .progress-bar:first-child[data-active="true"]) #prevButton,
-.progress-bar-wrapper:has(.progress-container .progress-bar:last-child[data-active="true"]) #nextButton,
-#recommendButton {
+.progress-bar-wrapper:has(.progress-container .progress-bar:last-child[data-active="true"]) #nextButton {
     opacity: 0;
     transform: scale(0.8);
     pointer-events: none;
+}
+
+#recommendButton {
+    opacity: 0;
+    transform: scale(0.8);
 }
 
 /* 显示推荐按钮时的样式 */
 .progress-bar-wrapper:has(.progress-container .progress-bar:last-child[data-active="true"]) #recommendButton {
     opacity: 1;
     transform: scale(1);
-    pointer-events: auto;
 }
+

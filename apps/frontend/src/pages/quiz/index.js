@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '../../styles/global.css'
 import { quizModel } from './model'
 import { renderProgressBar, initProgressBarEvents,updateProgressBarActive } from './components/ProgressBar';
+import { showRecommendationModal } from './components/RecommendationModal';
 
 document.documentElement.style.visibility = 'hidden';
 
@@ -14,9 +14,11 @@ function handleButtonClick(type) {
             rerender();
             break;
         case 'recommend':
-            if (quizModel.isAllQuestionsAnswered()) {
-                console.log('显示推荐页面');
-            }
+            quizModel.getRecommendation().then(data => {
+                if (data) {
+                    showRecommendationModal(data);
+                }
+            });
             break;
     }
 }
